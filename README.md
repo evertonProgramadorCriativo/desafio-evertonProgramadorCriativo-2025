@@ -1,19 +1,18 @@
 # ABRIGO DE ANIMAIS
 
+
 ## Sobre o Projeto
+
 
 #### O projeto é uma simulação de um sistema de gerenciamento de animais em um abrigo, com foco nos brinquedos favoritos de cada animal.
 
 
-![classe-inicial](https://i.ibb.co/Gf2ggXF7/Screenshot-33.png) 
 
-## Funcionalidades Atuais
 
-*   **Base de dados de animais** com nome, tipo e brinquedos favoritos
-    
-*   **Lista de brinquedos válidos** reconhecidos pelo sistema
-    
-*   **Métodos de exibição** para visualizar os dados no console
+![classe-metodo-brinquedos](https://i.ibb.co/vxPBLxFn/Screenshot-34.png) 
+![classe-metodo-animais](https://i.ibb.co/MxJNBMyJ/Screenshot-35.png) 
+
+
 
 Estrutura do Código
 --------------------
@@ -32,11 +31,48 @@ Inicializa dois atributos principais:
     
     this.brinquedosValidos = ['RATO', 'BOLA', 'LASER', 'CAIXA', 'NOVELO', 'SKATE'];
 
-#### Métodos Disponíveis
+### `parseBrinquedos(brinquedosStr)`
 
-*   `exibirAnimais()` - Mostra todos os animais e seus brinquedos favoritos
+*   **Função**: Converte uma string de brinquedos em um array limpo
     
-*   `exibirBrinquedosValidos()` - Exibe a lista de brinquedos reconhecidos pelo sistema
+*   **Funcionalidades**:
+    
+    *   Divide a string por vírgulas
+        
+    *   Remove espaços em branco de cada item
+        
+    *   Filtra valores vazios
+        
+    *   Inclui logs para debugging
+        
+
+### `parseAnimais(animaisStr)`
+
+*   **Função**: Converte uma string de nomes de animais em um array limpo
+    
+*   **Funcionalidades**:
+    
+    *   Divide a string por vírgulas
+        
+    *   Remove espaços em branco de cada nome
+        
+    *   Filtra valores vazios
+        
+    *   Inclui logs para debugging
+        
+
+Exemplos de Uso
+---------------
+
+    // Conversão de brinquedos
+    "RATO, BOLA, LASER" → ["RATO", "BOLA", "LASER"]
+    "  RATO ,  BOLA  " → ["RATO", "BOLA"]
+    
+    // Conversão de animais
+    "Rex, Mimi, Fofo" → ["Rex", "Mimi", "Fofo"]
+    "  Rex ,  Mimi  " → ["Rex", "Mimi"]
+
+
     
 
 Como Executar
@@ -57,38 +93,4 @@ Como Executar
 2.  **Execute o arquivo principal**
     
         node AbrigoAnimais.js
-
-
-### Importando a Classe
-
-    import { AbrigoAnimais } from './AbrigoAnimais.js';
-    
-    // Criar instância
-    const abrigo = new AbrigoAnimais();
-    
-    // Usar métodos
-    abrigo.exibirAnimais();
-    abrigo.exibirBrinquedosValidos();
-
-### Acessando Dados Diretamente
-
-    // Acessar um animal específico
-    console.log(abrigo.animais.Rex);
-    
-    // Verificar brinquedos válidos
-    console.log(abrigo.brinquedosValidos);    
-
-### Saída Esperada
-
-    LISTA DE ANIMAIS---- 
-    Rex: cão -> Brinquedos: RATO, BOLA
-    Mimi: gato -> Brinquedos: BOLA, LASER
-    Fofo: gato -> Brinquedos: BOLA, RATO, LASER
-    Zero: gato -> Brinquedos: RATO, BOLA
-    Bola: cão -> Brinquedos: CAIXA, NOVELO
-    Bebe: cão -> Brinquedos: LASER, RATO, BOLA
-    Loco: jabuti -> Brinquedos: SKATE, RATO
-    
-    -- BRINQUEDOS VÁLIDOS ----
-    RATO, BOLA, LASER, CAIXA, NOVELO, SKATE
 
