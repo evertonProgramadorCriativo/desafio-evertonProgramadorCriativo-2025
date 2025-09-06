@@ -73,7 +73,35 @@ Exemplos de Uso
     "  Rex ,  Mimi  " → ["Rex", "Mimi"]
 
 
+* * *
+
+Método `validarBrinquedos(brinquedos)`
+--------------------------------------
+
+**Função:** Valida se os brinquedos fornecidos são permitidos no sistema.
+
+**O que faz:**
+
+1.  **Verifica existência:** Confirma se cada brinquedo está na lista `brinquedosValidos`
     
+2.  **Previne duplicatas:** Usa um `Set` para garantir que não há brinquedos repetidos
+    
+3.  **Fornece feedback:** Logs detalhados mostrando o processo de validação
+    
+
+**Fluxo de validação:**
+
+    // Para cada brinquedo:
+    -  Se não está na lista válida → ERRO
+    -  Se está duplicado → ERRO  
+    -  Se é válido e único → OK
+
+**Exemplo de uso:**
+
+    abrigo.validarBrinquedos(['BOLA', 'RATO']); // Válido
+    abrigo.validarBrinquedos(['BOLA', 'CARRO']); //  Erro (carro não é válido)
+
+* * *    
 
 Como Executar
 --------------
