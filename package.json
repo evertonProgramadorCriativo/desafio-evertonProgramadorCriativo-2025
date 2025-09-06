@@ -1,0 +1,19 @@
+{
+  "name": "abrigo-animais",
+  "version": "1.0.0",
+  "description": "Teste para vaga de Programador 2025 - Everton Programador Criativo",
+  "type": "module",
+  "main": "src/abrigo-animais.js",
+ "scripts": {
+  "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+  "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+  "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+}
+,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.6.2"
+  }
+}
