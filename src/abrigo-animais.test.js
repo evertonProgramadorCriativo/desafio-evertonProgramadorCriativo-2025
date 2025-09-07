@@ -89,4 +89,14 @@ describe('Abrigo de Animais', () => {
       'RATO,SKATE', 'SKATE,RATO', 'Loco');
     expect(resultado.lista[0]).toBe('Loco - pessoa 2');
   });
+
+    // Regra : Gatos não dividem brinquedos
+  test('Gatos não dividem brinquedos', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'BOLA,LASER', 'BOLA,RATO,LASER', 'Mimi,Fofo');
+    
+    // Se ambos são gatos e compartilham brinquedos (BOLA, LASER), vão para o abrigo
+    expect(resultado.lista).toContain("Fofo - pessoa 2", "Mimi - abrigo");
+   
+  })
 });
