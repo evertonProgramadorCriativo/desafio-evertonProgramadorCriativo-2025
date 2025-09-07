@@ -63,4 +63,10 @@ describe('Abrigo de Animais', () => {
       'LASER,SKATE,RATO,BOLA', 'NOVELO', 'Bebe');
     expect(resultado.lista[0]).toBe('Bebe - pessoa 1');
   });
+  // Regra : Se ambas podem, ninguém fica
+  test('Se ambas as pessoas podem adotar, animal fica no abrigo', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA', 'RATO,BOLA', 'Rex');
+    expect(resultado.lista[0]).toBe('Rex - abrigo');
+  });
 });
