@@ -84,5 +84,9 @@ describe('Abrigo de Animais', () => {
       'RATO,SKATE', 'NOVELO', 'Loco,Rex');
     expect(resultado.lista).toContain('Loco - pessoa 1');
   });
-
+  test('Loco se importa com ordem se está sozinho', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,SKATE', 'SKATE,RATO', 'Loco');
+    expect(resultado.lista[0]).toBe('Loco - pessoa 2');
+  });
 });
