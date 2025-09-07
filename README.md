@@ -14,80 +14,49 @@
 ````bash
 const abrigo = new AbrigoAnimais();
 
-    // Processa todas as adoções seguindo as regras do sistema
-    processarAdocoes(brinquedos1, brinquedos2, animaisOrdem) {
-        console.log(`\n PROCESSANDO ADOCOES:`);
-        console.log(`  Pessoa 1: [${brinquedos1.join(', ')}]`);
-        console.log(`  Pessoa 2: [${brinquedos2.join(', ')}]`);
-        console.log(`  Animais: [${animaisOrdem.join(', ')}]`);
+    // método principal do sistema
+    encontraPessoas(brinquedosPessoa1, brinquedosPessoa2, ordemAnimais) {
+        // Exibe cabeçalho inicial do sistema
+        console.log(`------------------------------------------------`);
+        console.log(`------------------------------------------------`);
+        console.log(`INICIANDO SISTEMA DE ADOÇÃO DE ANIMAIS`);
+      
 
-        let adocoesPessoa1 = []; // Lista de animais adotados pela pessoa 1
-        let adocoesPessoa2 = []; // Lista de animais adotados pela pessoa 2
-        let animaisAbrigo = [];  // Lista de animais que ficaram no abrigo
+        try {
+            // Converte as entradas de texto em listas estruturadas
+            const brinquedos1 = this.parseBrinquedos(brinquedosPessoa1);
+            const brinquedos2 = this.parseBrinquedos(brinquedosPessoa2);
+            const animaisOrdem = this.parseAnimais(ordemAnimais);
 
-        const totalAnimais = animaisOrdem.length;
-        console.log(`  Total de animais: ${totalAnimais}`);
+            // Verifica se os brinquedos e animais informados são válidos
+            this.validarBrinquedos(brinquedos1);
+            this.validarBrinquedos(brinquedos2);
+            this.validarAnimais(animaisOrdem);
 
-        // Processa cada animal na ordem especificada
-        animaisOrdem.forEach((nomeAnimal, index) => {
-            console.log(`\n  PROCESSANDO ANIMAL ${index + 1}/${totalAnimais}: ${nomeAnimal}`);
+            // Executa o processo principal de adoção,
+            // associando pessoas a animais de acordo com os brinquedos
+            const resultado = this.processarAdocoes(brinquedos1, brinquedos2, animaisOrdem);
 
-            const animal = this.animais[nomeAnimal];
-            console.log(`    Tipo: ${animal.tipo}, Brinquedos: [${animal.brinquedos.join(', ')}]`);
+            // Exibe mensagem de sucesso após processamento
+          console.log(`------------------------------------------------`);
+          console.log(`------------------------------------------------`);
+            console.log(`SISTEMA EXECUTADO COM SUCESSO!`);
+             
 
-            // Verifica se cada pessoa pode adotar este animal
-            console.log(`    Verificando PESSOA 1...`);
-            const pessoa1Pode = this.pessoaPodeAdotar(brinquedos1, animal, nomeAnimal, totalAnimais);
+            // Retorna lista de adoções realizadas
+            return { lista: resultado };
 
-            console.log(`    Verificando PESSOA 2...`);
-            const pessoa2Pode = this.pessoaPodeAdotar(brinquedos2, animal, nomeAnimal, totalAnimais);
+        } catch (error) {
+            // Exibe mensagem de erro caso alguma etapa falhe
+          console.log(`------------------------------------------------`);
+            console.log(`ERRO NO SISTEMA: ${error.message}`);
+     
 
-            console.log(`    RESULTADO: P1=${pessoa1Pode ? 'PODE' : 'NAO PODE'}, P2=${pessoa2Pode ? 'PODE' : 'NAO PODE'}`);
-
-            // Aplica as regras de decisão para determinar onde o animal vai
-            if (pessoa1Pode && pessoa2Pode) {
-                // Regra 4: Se ambas podem adotar, vai para o abrigo
-                console.log(`    REGRA 4: Ambas podem adotar -> ${nomeAnimal} vai para o ABRIGO`);
-                animaisAbrigo.push(`${nomeAnimal} - abrigo`);
-            } else if (pessoa1Pode && adocoesPessoa1.length < 3) {
-                // Pessoa 1 pode adotar e ainda não atingiu o limite de 3 animais
-                console.log(`    PESSOA 1 adota ${nomeAnimal} (${adocoesPessoa1.length + 1}/3)`);
-                adocoesPessoa1.push(`${nomeAnimal} - pessoa 1`);
-            } else if (pessoa2Pode && adocoesPessoa2.length < 3) {
-                // Pessoa 2 pode adotar e ainda não atingiu o limite de 3 animais
-                console.log(`    PESSOA 2 adota ${nomeAnimal} (${adocoesPessoa2.length + 1}/3)`);
-                adocoesPessoa2.push(`${nomeAnimal} - pessoa 2`);
-            } else {
-                // Nenhuma pessoa pode adotar ou ambas atingiram o limite
-                const motivo = pessoa1Pode ? 'limite de 3 atingido P1' : pessoa2Pode ? 'limite de 3 atingido P2' : 'nenhuma pessoa pode adotar';
-                console.log(`    ${nomeAnimal} vai para ABRIGO (${motivo})`);
-                animaisAbrigo.push(`${nomeAnimal} - abrigo`);
-            }
-        });
-
-        console.log(`\n RESULTADO ANTES DA REGRA DOS GATOS:`);
-        console.log(`  Pessoa 1 (${adocoesPessoa1.length}): [${adocoesPessoa1.join(', ')}]`);
-        console.log(`  Pessoa 2 (${adocoesPessoa2.length}): [${adocoesPessoa2.join(', ')}]`);
-        console.log(`  Abrigo (${animaisAbrigo.length}): [${animaisAbrigo.join(', ')}]`);
-
-        // Aplica a regra especial dos gatos após processar todas as adoções
-        const resultadoComRegrasGatos = this.aplicarRegraGatos(adocoesPessoa1, adocoesPessoa2, animaisAbrigo);
-
-        console.log(`\nRESULTADO FINAL APOS REGRA DOS GATOS:`);
-        console.log(`  Pessoa 1 (${resultadoComRegrasGatos.adocoesPessoa1.length}): [${resultadoComRegrasGatos.adocoesPessoa1.join(', ')}]`);
-        console.log(`  Pessoa 2 (${resultadoComRegrasGatos.adocoesPessoa2.length}): [${resultadoComRegrasGatos.adocoesPessoa2.join(', ')}]`);
-        console.log(`  Abrigo (${resultadoComRegrasGatos.animaisAbrigo.length}): [${resultadoComRegrasGatos.animaisAbrigo.join(', ')}]`);
-
-        // Combina e ordena alfabeticamente o resultado final
-        const resultado = [
-            ...resultadoComRegrasGatos.adocoesPessoa1,
-            ...resultadoComRegrasGatos.adocoesPessoa2,
-            ...resultadoComRegrasGatos.animaisAbrigo
-        ].sort();
-
-        console.log(`\n LISTA FINAL ORDENADA: [${resultado.join(', ')}]`);
-        return resultado;
+            // Retorna erro no formato de objeto
+            return { erro: error.message };
+        }
     }
+}
 
 ````
 // Caso básico com adoções normais
@@ -145,8 +114,41 @@ console.log("Resultado final:", resultado6);
 
 ```
 
+// teste Normal
 
+const resultado1 = abrigo.encontraPessoas(
+    "RATO,BOLA",          // Brinquedos Pessoa 1
+    "LASER,CAIXA",        // Brinquedos Pessoa 2  
+    "Rex,Mimi,Fofo"       // Ordem dos animais
+);
+console.log("Resultado:", resultado1);
 
+// Teste com Conflito de Gatos
+
+const resultado2 = abrigo.encontraPessoas(
+    "RATO,BOLA,LASER",    // Pessoa 1 tem vários brinquedos
+    "RATO,BOLA,CAIXA",    // Pessoa 2 também tem
+    "Mimi,Fofo,Zero"      // Apenas gatos (vai dar conflito!)
+);
+console.log("Resultado:", resultado2);
+
+// brinquedo inválido
+
+const resultado3 = abrigo.encontraPessoas(
+    "RATO,BOLA",          // Brinquedos normais
+    "AVIÃO,CAIXA",        // AVIÃO não é brinquedo válido! 
+    "Rex,Mimi"            // Animais
+);
+console.log("Resultado:", resultado3);
+
+// Todos Animais e Brinquedo
+
+const resultado4 = abrigo.encontraPessoas(
+    "RATO,BOLA,LASER,NOVELO",
+    "CAIXA,SKATE,RATO,BOLA", 
+    "Rex,Mimi,Fofo,Zero,Bola,Bebe,Loco"  // Todos os animais
+);
+console.log("Resultado:", resultado4);
 
 ```
 
@@ -295,23 +297,26 @@ Método `pessoaPodeAdotar(brinquedosPessoa, animal, nomeAnimal, totalAnimais)`
 
 * * *
 
-Método  `encontraPessoas(brinquedosPessoa1, brinquedosPessoa2, ordemAnimais)`
--------------------------------------------------------------------------
 
-**Função principal** que inicia todo o processo de adoção.
+
+Método  `aplicarRegraGatos(adocoesPessoa1, adocoesPessoa2, animaisAbrigo)`
+----------------------------------------------------------------------
+
+**Regra especial** para evitar conflitos entre gatos.
 
 **Funcionalidades:**
 
-*   Recebe os brinquedos de cada pessoa e a ordem dos animais
+*   Verifica se AMBAS as pessoas adotaram gatos
     
-*   Faz parsingSTR e validação das entradas
+*   Se sim, compara os brinquedos favoritos dos gatos de cada pessoa
     
-*   Chama o processamento principal das adoções
+*   Se houver brinquedos em comum → **CONFLITO DETECTADO**
     
-*   Retorna o resultado final ou mensagem de erro
+*   Em caso de conflito, move TODOS os gatos para o abrigo
     
-*   Serve como ponto de entrada do sistema
-    
+*   Se não houver conflito ou apenas uma pessoa tiver gatos, mantém as adoções
+
+
 
 Método  `processarAdocoes(brinquedos1, brinquedos2, animaisOrdem)`
 --------------------------------------------------------------
@@ -338,27 +343,25 @@ Método  `processarAdocoes(brinquedos1, brinquedos2, animaisOrdem)`
     
 *   Retorna o resultado final ordenado
     
+    
+Método  `encontraPessoas(brinquedosPessoa1, brinquedosPessoa2, ordemAnimais)`
+-------------------------------------------------------------------------
 
-Método  `aplicarRegraGatos(adocoesPessoa1, adocoesPessoa2, animaisAbrigo)`
-----------------------------------------------------------------------
-
-**Regra especial** para evitar conflitos entre gatos.
+**Função principal** que inicia todo o processo de adoção.
 
 **Funcionalidades:**
 
-*   Verifica se AMBAS as pessoas adotaram gatos
+*   Recebe os brinquedos de cada pessoa e a ordem dos animais
     
-*   Se sim, compara os brinquedos favoritos dos gatos de cada pessoa
+*   Faz parsingSTR e validação das entradas
     
-*   Se houver brinquedos em comum → **CONFLITO DETECTADO**
+*   Chama o processamento principal das adoções
     
-*   Em caso de conflito, move TODOS os gatos para o abrigo
+*   Retorna o resultado final ou mensagem de erro
     
-*   Se não houver conflito ou apenas uma pessoa tiver gatos, mantém as adoções
+*   Serve como ponto de entrada do sistema
     
 
-
-    
 
 
 Como Executar
@@ -377,6 +380,10 @@ Como Executar
         cd nome-do-projeto
     
 2.  **Execute o arquivo principal**
-    
-        node AbrigoAnimais.js
+    ````bash
+
+        npm start # roda o projeto no Console.log
+        npm test  # roda os teste no jest
+
+  ````
 

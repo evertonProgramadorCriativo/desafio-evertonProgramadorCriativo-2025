@@ -341,16 +341,93 @@ class AbrigoAnimais {
         console.log(`\n LISTA FINAL ORDENADA: [${resultado.join(', ')}]`);
         return resultado;
     }
+
+    //  método principal do sistema
+    encontraPessoas(brinquedosPessoa1, brinquedosPessoa2, ordemAnimais) {
+        // Exibe cabeçalho inicial do sistema
+          console.log(`------------------------------------------------`);
+          console.log(`------------------------------------------------`);
+        console.log(`INICIANDO SISTEMA DE ADOÇÃO DE ANIMAIS`);
+
+        try {
+            // Converte as entradas de texto em listas estruturadas
+            const brinquedos1 = this.parseBrinquedos(brinquedosPessoa1);
+            const brinquedos2 = this.parseBrinquedos(brinquedosPessoa2);
+            const animaisOrdem = this.parseAnimais(ordemAnimais);
+
+            // Verifica se os brinquedos e animais informados são válidos
+            this.validarBrinquedos(brinquedos1);
+            this.validarBrinquedos(brinquedos2);
+            this.validarAnimais(animaisOrdem);
+
+            // Executa o processo principal de adoção,
+            // associando pessoas a animais de acordo com os brinquedos
+            const resultado = this.processarAdocoes(brinquedos1, brinquedos2, animaisOrdem);
+
+            // Exibe mensagem de sucesso após processamento
+              console.log(`------------------------------------------------`);
+              console.log(`------------------------------------------------`);
+            console.log(`SISTEMA EXECUTADO COM SUCESSO!`);
+
+
+            // Retorna lista de adoções realizadas
+            return { lista: resultado };
+
+        } catch (error) {
+            // Exibe mensagem de erro caso alguma etapa falhe
+            console.log(`------------------------------------------------`);
+            console.log(`------------------------------------------------`); 
+            console.log(`ERRO NO SISTEMA: ${error.message}`);
+             
+
+            // Retorna erro no formato de objeto
+            return { erro: error.message };
+        }
+    }
+
 }
 
 const abrigo = new AbrigoAnimais();
 
-//todos animais,brinquedos 
-const resultado6 = abrigo.processarAdocoes(
-    ['RATO', 'BOLA', 'LASER', 'CAIXA', 'SKATE'], // Pessoa 1
-    ['BOLA', 'LASER', 'RATO', 'NOVELO'],         // Pessoa 2
-    ['Rex', 'Mimi', 'Fofo', 'Zero', 'Bola', 'Bebe', 'Loco'] // Todos os animais
+// Todos Animais 
+
+const resultado4 = abrigo.encontraPessoas(
+    "RATO,BOLA,LASER,NOVELO",
+    "CAIXA,SKATE,RATO,BOLA", 
+    "Rex,Mimi,Fofo,Zero,Bola,Bebe,Loco"  // Todos os animais
 );
-console.log("Resultado final:", resultado6);
+console.log("Resultado:", resultado4);
+
+// Outros Testes
+/**
+ * 
+// teste Normal
+
+const resultado1 = abrigo.encontraPessoas(
+    "RATO,BOLA",          // Brinquedos Pessoa 1
+    "LASER,CAIXA",        // Brinquedos Pessoa 2  
+    "Rex,Mimi,Fofo"       // Ordem dos animais
+);
+console.log("Resultado:", resultado1);
+
+// Teste com Conflito de Gatos
+
+const resultado2 = abrigo.encontraPessoas(
+    "RATO,BOLA,LASER",    // Pessoa 1 tem vários brinquedos
+    "RATO,BOLA,CAIXA",    // Pessoa 2 também tem
+    "Mimi,Fofo,Zero"      // Apenas gatos (vai dar conflito!)
+);
+console.log("Resultado:", resultado2);
+
+// brinquedo inválido
+
+const resultado3 = abrigo.encontraPessoas(
+    "RATO,BOLA",          // Brinquedos normais
+    "AVIÃO,CAIXA",        // AVIÃO não é brinquedo válido! 
+    "Rex,Mimi"            // Animais
+);
+console.log("Resultado:", resultado3);
+
+ */
 
 export { AbrigoAnimais as AbrigoAnimais };
