@@ -14,93 +14,104 @@
 ````bash
 const abrigo = new AbrigoAnimais();
 
-    verificarOrdemBrinquedos(brinquedosPessoa, brinquedosAnimais) {
-        console.log(`\n VERIFICANDO ORDEM DE BRINQUEDOS:`);
-        console.log(`   Pessoa tem: [${brinquedosPessoa.join(', ')}]`);
-        console.log(`   Animal precisa: [${brinquedosAnimais.join(', ')}]`);
-
-        // Variável que controla a posição atual de busca nos brinquedos da pessoa
-        let indicePessoa = 0;
-
-        // Percorre todos os brinquedos que o animal precisa 
-        for (let i = 0; i < brinquedosAnimais.length; i++) {
-            const brinquedoAnimal = brinquedosAnimais[i];
-            console.log(`\n  Procurando "${brinquedoAnimal}" (${i + 1}/${brinquedosAnimais.length})`);
-            console.log(` Buscando a partir da posição ${indicePessoa}`);
-             
-            // Variável que indica se o brinquedo foi encontrado
-            let encontrado = false;
+    // Implementar regra especial do Loco
+    pessoaPodeAdotar(brinquedosPessoa, animal, nomeAnimal, totalAnimais) {
+        console.log(`\n VERIFICANDO SE PESSOA PODE ADOTAR ${nomeAnimal}:`);
+        console.log(` Animal: ${nomeAnimal} (${animal.tipo})`);
+        console.log(` Precisa de: [${animal.brinquedos.join(', ')}]`);
+        console.log(` Pessoa tem: [${brinquedosPessoa.join(', ')}]`);
+        console.log(` Total de animais: ${totalAnimais}`);
+        
+        // Regra especial para Loco
+        if (nomeAnimal === 'Loco' && totalAnimais > 1) {
+            console.log(` REGRA ESPECIAL DO LOCO: Como há ${totalAnimais} animais (> 1), Loco não se importa com a ordem!`);
             
-            // Percorre os brinquedos da pessoa a partir da posição atual
-            for (let j = indicePessoa; j < brinquedosPessoa.length; j++) {
-                console.log(` Posição ${j}: "${brinquedosPessoa[j]}"`);
-                
-                 // Verifica se o brinquedo da pessoa é o mesmo que o animal precisa
-                if (brinquedosPessoa[j] === brinquedoAnimal) {
-                    indicePessoa = j + 1;
-                    encontrado = true;
-                    console.log(`ENCONTRADO na posição ${j}! Próxima busca a partir da posição ${indicePessoa}`);
-                    break;
-                }
-            }
-            // Caso o brinquedo não tenha sido encontrado
-            if (!encontrado) {
-                console.log(`NÃO ENCONTRADO: "${brinquedoAnimal}" não foi encontrado na ordem correta`);
-                console.log(`ORDEM INCORRETA: Falha ao encontrar "${brinquedoAnimal}"`);
-                return false;
-            }
+            const temTodosBrinquedos = animal.brinquedos.every(brinquedo => {
+                const tem = brinquedosPessoa.includes(brinquedo);
+                console.log(`"{brinquedo}": ${tem ? ' TEM' : ' NÃO TEM'}`);
+                return tem;
+            });
+            
+            const resultado = temTodosBrinquedos;
+            console.log(` RESULTADO LOCO: ${resultado ? ' PODE ADOTAR' : ' NÃO PODE ADOTAR'}`);
+            return resultado;
         }
         
-        console.log(`ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada`);
-        return true;
+        // Regra geral para outros animais
+        console.log(` REGRA GERAL: Verificando ordem dos brinquedos...`);
+        const podeAdotar = this.verificarOrdemBrinquedos(brinquedosPessoa, animal.brinquedos);
+        console.log(` RESULTADO: ${podeAdotar ? 'PODE ADOTAR' : ' NÃO PODE ADOTAR'}`);
+        return podeAdotar;
     }
 
 ````
 
 ```
-EXEMPLO 1 ---
+
+ EXEMPLO 3 ----
+
+ VERIFICANDO SE PESSOA PODE ADOTAR Mimi:
+ Animal: Mimi (gato)
+ Precisa de: [BOLA, LASER]
+ Pessoa tem: [BOLA, LASER, RATO]
+ Total de animais: 3
+ REGRA GERAL: Verificando ordem dos brinquedos...
 
  VERIFICANDO ORDEM DE BRINQUEDOS:
-   Pessoa tem: [RATO, BOLA, LASER, CAIXA]
-   Animal precisa: [RATO, BOLA, LASER]
+   Pessoa tem: [BOLA, LASER, RATO]
+   Animal precisa: [BOLA, LASER]
 
-  Procurando "RATO" (1/3)
- Buscando a partir da posição 0
- Posição 0: "RATO"
-ENCONTRADO na posição 0! Próxima busca a partir da posição 1
-
-  Procurando "BOLA" (2/3)
- Buscando a partir da posição 1
- Posição 1: "BOLA"
-ENCONTRADO na posição 1! Próxima busca a partir da posição 2
-
-  Procurando "LASER" (3/3)
- Buscando a partir da posição 2
- Posição 2: "LASER"
-ENCONTRADO na posição 2! Próxima busca a partir da posição 3
-ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada
-Resultado: true
-
- EXEMPLO 2 -------
-
- VERIFICANDO ORDEM DE BRINQUEDOS:
-   Pessoa tem: [BOLA, RATO, LASER]
-   Animal precisa: [RATO, BOLA, LASER]
-
-  Procurando "RATO" (1/3)
+  Procurando "BOLA" (1/2)
  Buscando a partir da posição 0
  Posição 0: "BOLA"
+ENCONTRADO na posição 0! Próxima busca a partir da posição 1
+
+  Procurando "LASER" (2/2)
+ Buscando a partir da posição 1
+ Posição 1: "LASER"
+ENCONTRADO na posição 1! Próxima busca a partir da posição 2
+ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada
+ RESULTADO: PODE ADOTAR
+Pode adotar Mimi: true
+
+ EXEMPLO 4 ------
+
+ VERIFICANDO SE PESSOA PODE ADOTAR Loco:
+ Animal: Loco (jabuti)
+ Precisa de: [SKATE, RATO]
+ Pessoa tem: [SKATE, RATO, BOLA]
+ Total de animais: 2
+ REGRA ESPECIAL DO LOCO: Como há 2 animais (> 1), Loco não se importa com a ordem!
+"{brinquedo}":  TEM
+"{brinquedo}":  TEM
+ RESULTADO LOCO:  PODE ADOTAR
+Pode adotar Loco: true
+
+ EXEMPLO 5 -------
+
+ VERIFICANDO SE PESSOA PODE ADOTAR Loco:
+ Animal: Loco (jabuti)
+ Precisa de: [SKATE, RATO]
+ Pessoa tem: [SKATE, RATO, BOLA]
+ Total de animais: 1
+ REGRA GERAL: Verificando ordem dos brinquedos...
+
+ VERIFICANDO ORDEM DE BRINQUEDOS:
+   Pessoa tem: [SKATE, RATO, BOLA]
+   Animal precisa: [SKATE, RATO]
+
+  Procurando "SKATE" (1/2)
+ Buscando a partir da posição 0
+ Posição 0: "SKATE"
+ENCONTRADO na posição 0! Próxima busca a partir da posição 1
+
+  Procurando "RATO" (2/2)
+ Buscando a partir da posição 1
  Posição 1: "RATO"
 ENCONTRADO na posição 1! Próxima busca a partir da posição 2
-
-  Procurando "BOLA" (2/3)
- Buscando a partir da posição 2
- Posição 2: "LASER"
-NÃO ENCONTRADO: "BOLA" não foi encontrado na ordem correta
-ORDEM INCORRETA: Falha ao encontrar "BOLA"
-Resultado: false
-
-
+ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada
+ RESULTADO: PODE ADOTAR
+Pode adotar Loco (apenas 1 animal): true
 ```
 
 Estrutura do Código
@@ -220,6 +231,34 @@ Método `validarAnimais(animais)`
     abrigo.validarAnimais(['Rex', 'Toto']); //  Erro (Toto não existe)
 
 * * *
+Método `verificarOrdemBrinquedos(brinquedosPessoa, brinquedosAnimais)`
+-------------------------------------------------------------------
+
+**Funcionamento:**
+
+*   Verifica se os brinquedos da pessoa aparecem na mesma ordem que os brinquedos preferidos do animal
+    
+*   A ordem deve ser mantida, mas a pessoa pode ter brinquedos extras entre os necessários
+    
+*   Retorna `true` se a ordem estiver correta, `false` caso contrário
+    
+
+Método `pessoaPodeAdotar(brinquedosPessoa, animal, nomeAnimal, totalAnimais)`
+--------------------------------------------------------------------------
+
+**Funcionamento:**
+
+*   Verifica se uma pessoa pode adotar um animal específico
+    
+*   Para o animal "Loco": se houver mais de 1 animal, ignora a ordem (apenas verifica se tem todos os brinquedos)
+    
+*   Para outros animais: aplica a verificação normal de ordem
+    
+*   Retorna `true` se pode adotar, `false` caso contrário
+    
+
+* * *
+
 
 Como Executar
 --------------
