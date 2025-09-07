@@ -28,4 +28,14 @@ describe('Abrigo de Animais', () => {
       expect(resultado.lista.length).toBe(4);
       expect(resultado.erro).toBeFalsy();
   });
+   // Teste principais
+  test('Deve encontrar pessoa para um animal', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA', 'RATO,NOVELO', 'Rex,Fofo');
+      expect(resultado.lista[0]).toBe('Fofo - abrigo');
+      expect(resultado.lista[1]).toBe('Rex - pessoa 1');
+      expect(resultado.lista.length).toBe(2);
+      expect(resultado.erro).toBeFalsy();
+  });
+
 });
