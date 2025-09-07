@@ -72,6 +72,36 @@ class AbrigoAnimais {
         console.log(` VALIDAÇÃO BRINQUEDOS: Todos os ${brinquedos.length} brinquedos são válidos`);
         return true;
     }
+  // FUNÇÃO DE VALIDAÇÃO DE ANIMAIS
+     
+    validarAnimais(animais) {
+        console.log(`\n VALIDANDO ANIMAIS: [${animais.join(', ')}]`);
+        
+        const animaisUnicos = new Set();
+        
+        for (const animal of animais) {
+            console.log(` Verificando: ${animal}`);
+            // Animal inexistente
+            if (!this.animais[animal]) {
+                console.log(` ERRO: Animal "${animal}" não existe na base de dados`);
+                console.log(`  Animais disponíveis: [${Object.keys(this.animais).join(', ')}]`);
+                throw new Error('Animal inválido');
+            }
+            // Animal duplicado
+            if (animaisUnicos.has(animal)) {
+                console.log(`  ERRO: Animal "${animal}" está duplicado`);
+                throw new Error('Animal inválido');
+            }
+            // Animal válido e único
+            
+            const info = this.animais[animal];
+            animaisUnicos.add(animal);
+            console.log(`   "${animal}" (${info.tipo}) - Brinquedos: [${info.brinquedos.join(', ')}]`);
+        }
+        
+        console.log(` VALIDAÇÃO ANIMAIS: Todos os ${animais.length} animais são válidos`);
+        return true;
+    }
 
 }
 
@@ -103,6 +133,42 @@ try {
     abrigo.validarBrinquedos(['BOLA', 'BOLA']); // Duplicado
 } catch (e) {
     console.log('Erro capturado:', e.message);
+}
+
+
+// Teste do validarAnimais() - CASOS VÁLIDOS
+console.log("\n ---- TESTES ANIMAIS VÁLIDOS  ----");
+try {
+    abrigo.validarAnimais(['Rex', 'Mimi']);
+    abrigo.validarAnimais(['Fofo', 'Bola', 'Bebe']);
+} catch (e) {
+    console.log('Erro:', e.message);
+}
+
+//  Teste do validarAnimais() - CASOS INVÁLIDOS
+console.log("\n TESTES ANIMAIS INVÁLIDOS ---");
+try {
+    abrigo.validarAnimais(['Rex', 'Toto']); // Animal inexistente
+} catch (e) {
+    console.log('Erro capturado:', e.message);
+}
+
+//  Teste do validarAnimais() - CASO INVÁLIDO (duplicado)
+console.log("\n TESTES ANIMAIS DUPLICADO ---");
+try {
+    abrigo.validarAnimais(['Rex', 'Rex']); // Duplicado
+} catch (e) {
+    console.log('Erro capturado:', e.message);
+}
+
+//  Teste combinado (animais e brinquedos)
+console.log("\n Teste combinado (animais e brinquedos)");
+try {
+    abrigo.validarAnimais(['Mimi', 'Fofo']);
+    abrigo.validarBrinquedos(['BOLA', 'LASER']);
+    console.log(' Todos os dados são válidos!');
+} catch (e) {
+    console.log(' Erro:', e.message);
 }
 
 export { AbrigoAnimais as AbrigoAnimais };
