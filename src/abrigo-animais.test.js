@@ -49,4 +49,11 @@ describe('Abrigo de Animais', () => {
       expect(resultado.lista.length).toBe(4);
       expect(resultado.erro).toBeFalsy();
   });
+
+   // Regra 1: Ordem dos brinquedos
+  test('Deve respeitar ordem dos brinquedos', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'BOLA,RATO', 'RATO,BOLA', 'Rex');
+    expect(resultado.lista[0]).toBe('Rex - pessoa 2');
+  });
 });
