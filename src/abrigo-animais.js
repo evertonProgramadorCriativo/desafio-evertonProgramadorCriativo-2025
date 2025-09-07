@@ -62,7 +62,7 @@ class AbrigoAnimais {
             // Se está duplicado → ERRO  
             if (brinquedosUnicos.has(brinquedo)) {
                 console.log(`  ERRO: Brinquedo "${brinquedo}" está duplicado`);
-                throw new Error('Brinquedo duplicado não é permitido');
+                throw new Error('Brinquedo inválido');
             }
             // Se é válido e único → OK
             brinquedosUnicos.add(brinquedo);
@@ -174,29 +174,120 @@ class AbrigoAnimais {
         return podeAdotar;
     }
 
+    // A Função aplicarRegragatosAplica: se duas pessoas adotam gatos que compartilham brinquedos,
+    // todos os gatos são devolvidos ao abrigo para evitar conflitos
+    aplicarRegraGatos(adocoesPessoa1, adocoesPessoa2, animaisAbrigo) {
+        console.log(`\n APLICANDO REGRA DOS GATOS:`);
 
+        // Encontrar gatos adotados por cada pessoa
+        const gatosP1 = adocoesPessoa1.filter(adocao => {
+            const nomeAnimal = adocao.split(' - ')[0]; // Extrai o nome do animal da string de adoção
+            const ehGato = this.animais[nomeAnimal].tipo === 'gato'; // Verifica se é um gato
+            if (ehGato) console.log(`  Pessoa 1 tem gato: ${nomeAnimal}`);
+            return ehGato;
+        });
+
+        const gatosP2 = adocoesPessoa2.filter(adocao => {
+            const nomeAnimal = adocao.split(' - ')[0];
+            const ehGato = this.animais[nomeAnimal].tipo === 'gato';
+            if (ehGato) console.log(`  Pessoa 2 tem gato: ${nomeAnimal}`);
+            return ehGato;
+        });
+
+        console.log(`  Pessoa 1: ${gatosP1.length} gatos, Pessoa 2: ${gatosP2.length} gatos`);
+
+        // Verificar conflito apenas se ambas pessoas têm gatos
+        if (gatosP1.length > 0 && gatosP2.length > 0) {
+            console.log(`  AMBAS PESSOAS TEM GATOS - Verificando conflito de brinquedos...`);
+
+            const brinquedosGatosP1 = new Set(); //  armazenar brinquedos únicos
+            const brinquedosGatosP2 = new Set();
+
+            // Coletar brinquedos dos gatos da pessoa 1
+            gatosP1.forEach(adocao => {
+                const nomeAnimal = adocao.split(' - ')[0];
+                console.log(`    Gatos P1 - ${nomeAnimal}: [${this.animais[nomeAnimal].brinquedos.join(', ')}]`);
+                this.animais[nomeAnimal].brinquedos.forEach(b => brinquedosGatosP1.add(b));
+            });
+
+            // Coletar brinquedos dos gatos da pessoa 2
+            gatosP2.forEach(adocao => {
+                const nomeAnimal = adocao.split(' - ')[0];
+                console.log(`    Gatos P2 - ${nomeAnimal}: [${this.animais[nomeAnimal].brinquedos.join(', ')}]`);
+                this.animais[nomeAnimal].brinquedos.forEach(b => brinquedosGatosP2.add(b));
+            });
+
+            console.log(`  Brinquedos gatos P1: [${[...brinquedosGatosP1].join(', ')}]`);
+            console.log(`  Brinquedos gatos P2: [${[...brinquedosGatosP2].join(', ')}]`);
+
+            // Verificar se há brinquedos em comum entre os gatos das duas pessoas
+            const brinquedosConflito = [...brinquedosGatosP1].filter(b => brinquedosGatosP2.has(b));
+            const temConflito = brinquedosConflito.length > 0;
+
+            if (temConflito) {
+                console.log(`  CONFLITO DETECTADO! Brinquedos em comum: [${brinquedosConflito.join(', ')}]`);
+                console.log(`  MOVENDO TODOS OS GATOS PARA O ABRIGO...`);
+
+                const todosGatos = [...gatosP1, ...gatosP2];
+                const novosAdocoesPessoa1 = [...adocoesPessoa1]; // Cria cópias para não modificar originais
+                const novosAdocoesPessoa2 = [...adocoesPessoa2];
+                const novosAnimaisAbrigo = [...animaisAbrigo];
+
+                // Remove todos os gatos das listas de adoção e move para o abrigo
+                todosGatos.forEach(gatoAdocao => {
+                    const nomeAnimal = gatoAdocao.split(' - ')[0];
+                    console.log(`    Movendo ${nomeAnimal} para o abrigo`);
+
+                    // Remover das listas de adoção das pessoas
+                    const indexP1 = novosAdocoesPessoa1.findIndex(a => a.startsWith(nomeAnimal));
+                    if (indexP1 !== -1) novosAdocoesPessoa1.splice(indexP1, 1);
+
+                    const indexP2 = novosAdocoesPessoa2.findIndex(a => a.startsWith(nomeAnimal));
+                    if (indexP2 !== -1) novosAdocoesPessoa2.splice(indexP2, 1);
+
+                    // Adicionar ao abrigo se não estiver lá
+                    if (!novosAnimaisAbrigo.some(a => a.startsWith(nomeAnimal))) {
+                        novosAnimaisAbrigo.push(`${nomeAnimal} - abrigo`);
+                    }
+                });
+
+                console.log(`  REGRA DOS GATOS APLICADA: ${todosGatos.length} gatos movidos para abrigo`);
+                return {
+                    adocoesPessoa1: novosAdocoesPessoa1,
+                    adocoesPessoa2: novosAdocoesPessoa2,
+                    animaisAbrigo: novosAnimaisAbrigo
+                };
+            } else {
+                console.log(`  SEM CONFLITO: Gatos podem ficar com suas respectivas pessoas`);
+            }
+        } else {
+            console.log(`  SEM CONFLITO: Apenas uma pessoa (ou nenhuma) tem gatos`);
+        }
+
+        return { adocoesPessoa1, adocoesPessoa2, animaisAbrigo };
+    }
 }
 
 const abrigo = new AbrigoAnimais();
 
+/* 
+// Cenário onde ambas pessoas têm gatos com brinquedos em comum
+const adocoesP1 = ['Mimi - pessoa 1', 'Rex - pessoa 1']; // Mimi é gato
+const adocoesP2 = ['Fofo - pessoa 2', 'Bola - pessoa 2']; // Fofo é gato
+const animaisAbrigo = ['Zero - abrigo'];
 
-//  Tentando adotar Mimi (regra geral)
-console.log("\n EXEMPLO 3 ----");
-const brinquedos3 = ['BOLA', 'LASER', 'RATO'];
-const mimi = abrigo.animais['Mimi'];
-const resultado3 = abrigo.pessoaPodeAdotar(brinquedos3, mimi, 'Mimi', 3);
-console.log("Pode adotar Mimi:", resultado3);
+console.log(" CONFLITO DE BRINQUEDOS ---------");
+const resultado1 = abrigo.aplicarRegraGatos(adocoesP1, adocoesP2, animaisAbrigo);
+console.log("Resultado:", resultado1);
+*/
 
-// Tentando adotar Loco com múltiplos animais (regra especial)
-console.log("\n EXEMPLO 4 ------");
-const brinquedos4 = ['SKATE', 'RATO', 'BOLA']; // Ordem errada, mas Loco não se importa
-const loco = abrigo.animais['Loco'];
-const resultado4 = abrigo.pessoaPodeAdotar(brinquedos4, loco, 'Loco', 2);
-console.log("Pode adotar Loco:", resultado4);
+// Cenário onde gatos têm brinquedos diferentes
+const adocoesP1 = ['Mimi - pessoa 1']; // Mimi: ['BOLA', 'LASER']
+const adocoesP2 = ['Zero - pessoa 2']; // Zero: ['RATO', 'BOLA'] 
+const animaisAbrigo = [];
 
-// Tentando adotar Loco com apenas 1 animal (regra normal)
-console.log("\n EXEMPLO 5 -------");
-const resultado5 = abrigo.pessoaPodeAdotar(brinquedos4, loco, 'Loco', 1);
-console.log("Pode adotar Loco (apenas 1 animal):", resultado5);
+console.log("\n SEM CONFLITO (brinquedos diferentes) ---------");
+const resultado2 = abrigo.aplicarRegraGatos(adocoesP1, adocoesP2, animaisAbrigo);
+console.log("Resultado:", resultado2);
 
 export { AbrigoAnimais as AbrigoAnimais };
