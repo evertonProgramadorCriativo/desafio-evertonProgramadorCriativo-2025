@@ -266,28 +266,91 @@ class AbrigoAnimais {
 
         return { adocoesPessoa1, adocoesPessoa2, animaisAbrigo };
     }
+
+    // Processa todas as adoções seguindo as regras do sistema
+    processarAdocoes(brinquedos1, brinquedos2, animaisOrdem) {
+        console.log(`\n PROCESSANDO ADOCOES:`);
+        console.log(`  Pessoa 1: [${brinquedos1.join(', ')}]`);
+        console.log(`  Pessoa 2: [${brinquedos2.join(', ')}]`);
+        console.log(`  Animais: [${animaisOrdem.join(', ')}]`);
+
+        let adocoesPessoa1 = []; // Lista de animais adotados pela pessoa 1
+        let adocoesPessoa2 = []; // Lista de animais adotados pela pessoa 2
+        let animaisAbrigo = [];  // Lista de animais que ficaram no abrigo
+
+        const totalAnimais = animaisOrdem.length;
+        console.log(`  Total de animais: ${totalAnimais}`);
+
+        // Processa cada animal na ordem especificada
+        animaisOrdem.forEach((nomeAnimal, index) => {
+            console.log(`\n  PROCESSANDO ANIMAL ${index + 1}/${totalAnimais}: ${nomeAnimal}`);
+
+            const animal = this.animais[nomeAnimal];
+            console.log(`    Tipo: ${animal.tipo}, Brinquedos: [${animal.brinquedos.join(', ')}]`);
+
+            // Verifica se cada pessoa pode adotar este animal
+            console.log(`    Verificando PESSOA 1...`);
+            const pessoa1Pode = this.pessoaPodeAdotar(brinquedos1, animal, nomeAnimal, totalAnimais);
+
+            console.log(`    Verificando PESSOA 2...`);
+            const pessoa2Pode = this.pessoaPodeAdotar(brinquedos2, animal, nomeAnimal, totalAnimais);
+
+            console.log(`    RESULTADO: P1=${pessoa1Pode ? 'PODE' : 'NAO PODE'}, P2=${pessoa2Pode ? 'PODE' : 'NAO PODE'}`);
+
+            // Aplica as regras de decisão para determinar onde o animal vai
+            if (pessoa1Pode && pessoa2Pode) {
+                // Regra 4: Se ambas podem adotar, vai para o abrigo
+                console.log(`    REGRA 4: Ambas podem adotar -> ${nomeAnimal} vai para o ABRIGO`);
+                animaisAbrigo.push(`${nomeAnimal} - abrigo`);
+            } else if (pessoa1Pode && adocoesPessoa1.length < 3) {
+                // Pessoa 1 pode adotar e ainda não atingiu o limite de 3 animais
+                console.log(`    PESSOA 1 adota ${nomeAnimal} (${adocoesPessoa1.length + 1}/3)`);
+                adocoesPessoa1.push(`${nomeAnimal} - pessoa 1`);
+            } else if (pessoa2Pode && adocoesPessoa2.length < 3) {
+                // Pessoa 2 pode adotar e ainda não atingiu o limite de 3 animais
+                console.log(`    PESSOA 2 adota ${nomeAnimal} (${adocoesPessoa2.length + 1}/3)`);
+                adocoesPessoa2.push(`${nomeAnimal} - pessoa 2`);
+            } else {
+                // Nenhuma pessoa pode adotar ou ambas atingiram o limite
+                const motivo = pessoa1Pode ? 'limite de 3 atingido P1' : pessoa2Pode ? 'limite de 3 atingido P2' : 'nenhuma pessoa pode adotar';
+                console.log(`    ${nomeAnimal} vai para ABRIGO (${motivo})`);
+                animaisAbrigo.push(`${nomeAnimal} - abrigo`);
+            }
+        });
+
+        console.log(`\n RESULTADO ANTES DA REGRA DOS GATOS:`);
+        console.log(`  Pessoa 1 (${adocoesPessoa1.length}): [${adocoesPessoa1.join(', ')}]`);
+        console.log(`  Pessoa 2 (${adocoesPessoa2.length}): [${adocoesPessoa2.join(', ')}]`);
+        console.log(`  Abrigo (${animaisAbrigo.length}): [${animaisAbrigo.join(', ')}]`);
+
+        // Aplica a regra especial dos gatos após processar todas as adoções
+        const resultadoComRegrasGatos = this.aplicarRegraGatos(adocoesPessoa1, adocoesPessoa2, animaisAbrigo);
+
+        console.log(`\nRESULTADO FINAL APOS REGRA DOS GATOS:`);
+        console.log(`  Pessoa 1 (${resultadoComRegrasGatos.adocoesPessoa1.length}): [${resultadoComRegrasGatos.adocoesPessoa1.join(', ')}]`);
+        console.log(`  Pessoa 2 (${resultadoComRegrasGatos.adocoesPessoa2.length}): [${resultadoComRegrasGatos.adocoesPessoa2.join(', ')}]`);
+        console.log(`  Abrigo (${resultadoComRegrasGatos.animaisAbrigo.length}): [${resultadoComRegrasGatos.animaisAbrigo.join(', ')}]`);
+
+        // Combina e ordena alfabeticamente o resultado final
+        const resultado = [
+            ...resultadoComRegrasGatos.adocoesPessoa1,
+            ...resultadoComRegrasGatos.adocoesPessoa2,
+            ...resultadoComRegrasGatos.animaisAbrigo
+        ].sort();
+
+        console.log(`\n LISTA FINAL ORDENADA: [${resultado.join(', ')}]`);
+        return resultado;
+    }
 }
 
 const abrigo = new AbrigoAnimais();
 
-/* 
-// Cenário onde ambas pessoas têm gatos com brinquedos em comum
-const adocoesP1 = ['Mimi - pessoa 1', 'Rex - pessoa 1']; // Mimi é gato
-const adocoesP2 = ['Fofo - pessoa 2', 'Bola - pessoa 2']; // Fofo é gato
-const animaisAbrigo = ['Zero - abrigo'];
-
-console.log(" CONFLITO DE BRINQUEDOS ---------");
-const resultado1 = abrigo.aplicarRegraGatos(adocoesP1, adocoesP2, animaisAbrigo);
-console.log("Resultado:", resultado1);
-*/
-
-// Cenário onde gatos têm brinquedos diferentes
-const adocoesP1 = ['Mimi - pessoa 1']; // Mimi: ['BOLA', 'LASER']
-const adocoesP2 = ['Zero - pessoa 2']; // Zero: ['RATO', 'BOLA'] 
-const animaisAbrigo = [];
-
-console.log("\n SEM CONFLITO (brinquedos diferentes) ---------");
-const resultado2 = abrigo.aplicarRegraGatos(adocoesP1, adocoesP2, animaisAbrigo);
-console.log("Resultado:", resultado2);
+//todos animais,brinquedos 
+const resultado6 = abrigo.processarAdocoes(
+    ['RATO', 'BOLA', 'LASER', 'CAIXA', 'SKATE'], // Pessoa 1
+    ['BOLA', 'LASER', 'RATO', 'NOVELO'],         // Pessoa 2
+    ['Rex', 'Mimi', 'Fofo', 'Zero', 'Bola', 'Bebe', 'Loco'] // Todos os animais
+);
+console.log("Resultado final:", resultado6);
 
 export { AbrigoAnimais as AbrigoAnimais };
