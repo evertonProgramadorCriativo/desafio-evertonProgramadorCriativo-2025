@@ -69,4 +69,14 @@ describe('Abrigo de Animais', () => {
       'RATO,BOLA', 'RATO,BOLA', 'Rex');
     expect(resultado.lista[0]).toBe('Rex - abrigo');
   });
+
+    // Regra : Máximo 3 animais por pessoa
+  test('Pessoa não pode levar mais de 3 animais', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA,LASER,CAIXA,NOVELO,SKATE', 'NOVELO', 'Rex,Mimi,Bebe,Bola');
+    
+    const pessoa1Adocoes = resultado.lista.filter(item => item.includes('pessoa 1'));
+    expect(pessoa1Adocoes.length).toBeLessThanOrEqual(3);
+  });
+
 });
