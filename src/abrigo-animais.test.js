@@ -78,5 +78,11 @@ describe('Abrigo de Animais', () => {
     const pessoa1Adocoes = resultado.lista.filter(item => item.includes('pessoa 1'));
     expect(pessoa1Adocoes.length).toBeLessThanOrEqual(3);
   });
+  // Regra : Loco não se importa com ordem se tem companhia
+  test('Loco não se importa com ordem dos brinquedos se tem companhia', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,SKATE', 'NOVELO', 'Loco,Rex');
+    expect(resultado.lista).toContain('Loco - pessoa 1');
+  });
 
 });
