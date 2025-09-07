@@ -102,73 +102,62 @@ class AbrigoAnimais {
         console.log(` VALIDAÇÃO ANIMAIS: Todos os ${animais.length} animais são válidos`);
         return true;
     }
+      // feat: Implementar verificação de ordem de brinquedos com processo detalhado
+    verificarOrdemBrinquedos(brinquedosPessoa, brinquedosAnimais) {
+        console.log(`\n VERIFICANDO ORDEM DE BRINQUEDOS:`);
+        console.log(`   Pessoa tem: [${brinquedosPessoa.join(', ')}]`);
+        console.log(`   Animal precisa: [${brinquedosAnimais.join(', ')}]`);
+
+        // Variável que controla a posição atual de busca nos brinquedos da pessoa
+        let indicePessoa = 0;
+
+        // Percorre todos os brinquedos que o animal precisa 
+        for (let i = 0; i < brinquedosAnimais.length; i++) {
+            const brinquedoAnimal = brinquedosAnimais[i];
+            console.log(`\n  Procurando "${brinquedoAnimal}" (${i + 1}/${brinquedosAnimais.length})`);
+            console.log(` Buscando a partir da posição ${indicePessoa}`);
+             
+            // Variável que indica se o brinquedo foi encontrado
+            let encontrado = false;
+            
+            // Percorre os brinquedos da pessoa a partir da posição atual
+            for (let j = indicePessoa; j < brinquedosPessoa.length; j++) {
+                console.log(` Posição ${j}: "${brinquedosPessoa[j]}"`);
+                
+                 // Verifica se o brinquedo da pessoa é o mesmo que o animal precisa
+                if (brinquedosPessoa[j] === brinquedoAnimal) {
+                    indicePessoa = j + 1;
+                    encontrado = true;
+                    console.log(`ENCONTRADO na posição ${j}! Próxima busca a partir da posição ${indicePessoa}`);
+                    break;
+                }
+            }
+            // Caso o brinquedo não tenha sido encontrado
+            if (!encontrado) {
+                console.log(`NÃO ENCONTRADO: "${brinquedoAnimal}" não foi encontrado na ordem correta`);
+                console.log(`ORDEM INCORRETA: Falha ao encontrar "${brinquedoAnimal}"`);
+                return false;
+            }
+        }
+        
+        console.log(`ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada`);
+        return true;
+    }
 
 }
 
 const abrigo = new AbrigoAnimais();
 
+// Exemplo 1: Verificação normal (sucesso)
+console.log("EXEMPLO 1 ---");
+const brinquedos1 = ['RATO', 'BOLA', 'LASER', 'CAIXA'];
+const resultado1 = abrigo.verificarOrdemBrinquedos(brinquedos1, ['RATO', 'BOLA', 'LASER']);
+console.log("Resultado:", resultado1);
 
-
-// Teste do validarBrinquedos() - CASOS VÁLIDOS
-console.log(" TESTES VÁLIDOS ---");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'RATO']);
-    abrigo.validarBrinquedos(['LASER', 'CAIXA', 'NOVELO']);
-} catch (e) {
-    console.log('Erro:', e.message);
-}
-
-// Teste do validarBrinquedos() - CASOS INVÁLIDOS
-console.log("\n TESTES INVÁLIDOS ------");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'CARRO']); // Brinquedo inválido
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-
-}
-
-// Teste do validarBrinquedos() - CASO INVÁLIDO (duplicado)
-console.log("\n TESTES DUPLICADO ------");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'BOLA']); // Duplicado
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-
-// Teste do validarAnimais() - CASOS VÁLIDOS
-console.log("\n ---- TESTES ANIMAIS VÁLIDOS  ----");
-try {
-    abrigo.validarAnimais(['Rex', 'Mimi']);
-    abrigo.validarAnimais(['Fofo', 'Bola', 'Bebe']);
-} catch (e) {
-    console.log('Erro:', e.message);
-}
-
-//  Teste do validarAnimais() - CASOS INVÁLIDOS
-console.log("\n TESTES ANIMAIS INVÁLIDOS ---");
-try {
-    abrigo.validarAnimais(['Rex', 'Toto']); // Animal inexistente
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-//  Teste do validarAnimais() - CASO INVÁLIDO (duplicado)
-console.log("\n TESTES ANIMAIS DUPLICADO ---");
-try {
-    abrigo.validarAnimais(['Rex', 'Rex']); // Duplicado
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-//  Teste combinado (animais e brinquedos)
-console.log("\n Teste combinado (animais e brinquedos)");
-try {
-    abrigo.validarAnimais(['Mimi', 'Fofo']);
-    abrigo.validarBrinquedos(['BOLA', 'LASER']);
-    console.log(' Todos os dados são válidos!');
-} catch (e) {
-    console.log(' Erro:', e.message);
-}
+// Exemplo 2: Verificação normal (falha na ordem)
+console.log("\n EXEMPLO 2 -------");
+const brinquedos2 = ['BOLA', 'RATO', 'LASER'];
+const resultado2 = abrigo.verificarOrdemBrinquedos(brinquedos2, ['RATO', 'BOLA', 'LASER']);
+console.log("Resultado:", resultado2);
 
 export { AbrigoAnimais as AbrigoAnimais };

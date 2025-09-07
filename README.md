@@ -14,162 +14,92 @@
 ````bash
 const abrigo = new AbrigoAnimais();
 
+    verificarOrdemBrinquedos(brinquedosPessoa, brinquedosAnimais) {
+        console.log(`\n VERIFICANDO ORDEM DE BRINQUEDOS:`);
+        console.log(`   Pessoa tem: [${brinquedosPessoa.join(', ')}]`);
+        console.log(`   Animal precisa: [${brinquedosAnimais.join(', ')}]`);
 
+        // Variável que controla a posição atual de busca nos brinquedos da pessoa
+        let indicePessoa = 0;
 
-// Teste do validarBrinquedos() - CASOS VÁLIDOS
-console.log(" TESTES VÁLIDOS ---");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'RATO']);
-    abrigo.validarBrinquedos(['LASER', 'CAIXA', 'NOVELO']);
-} catch (e) {
-    console.log('Erro:', e.message);
-}
+        // Percorre todos os brinquedos que o animal precisa 
+        for (let i = 0; i < brinquedosAnimais.length; i++) {
+            const brinquedoAnimal = brinquedosAnimais[i];
+            console.log(`\n  Procurando "${brinquedoAnimal}" (${i + 1}/${brinquedosAnimais.length})`);
+            console.log(` Buscando a partir da posição ${indicePessoa}`);
+             
+            // Variável que indica se o brinquedo foi encontrado
+            let encontrado = false;
+            
+            // Percorre os brinquedos da pessoa a partir da posição atual
+            for (let j = indicePessoa; j < brinquedosPessoa.length; j++) {
+                console.log(` Posição ${j}: "${brinquedosPessoa[j]}"`);
+                
+                 // Verifica se o brinquedo da pessoa é o mesmo que o animal precisa
+                if (brinquedosPessoa[j] === brinquedoAnimal) {
+                    indicePessoa = j + 1;
+                    encontrado = true;
+                    console.log(`ENCONTRADO na posição ${j}! Próxima busca a partir da posição ${indicePessoa}`);
+                    break;
+                }
+            }
+            // Caso o brinquedo não tenha sido encontrado
+            if (!encontrado) {
+                console.log(`NÃO ENCONTRADO: "${brinquedoAnimal}" não foi encontrado na ordem correta`);
+                console.log(`ORDEM INCORRETA: Falha ao encontrar "${brinquedoAnimal}"`);
+                return false;
+            }
+        }
+        
+        console.log(`ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada`);
+        return true;
+    }
 
-// Teste do validarBrinquedos() - CASOS INVÁLIDOS
-console.log("\n TESTES INVÁLIDOS ------");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'CARRO']); // Brinquedo inválido
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-
-}
-
-// Teste do validarBrinquedos() - CASO INVÁLIDO (duplicado)
-console.log("\n TESTES DUPLICADO ------");
-try {
-    abrigo.validarBrinquedos(['BOLA', 'BOLA']); // Duplicado
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-
-// Teste do validarAnimais() - CASOS VÁLIDOS
-console.log("\n=== TESTES ANIMAIS VÁLIDOS ===");
-try {
-    abrigo.validarAnimais(['Rex', 'Mimi']);
-    abrigo.validarAnimais(['Fofo', 'Bola', 'Bebe']);
-} catch (e) {
-    console.log('Erro:', e.message);
-}
-
-//  Teste do validarAnimais() - CASOS INVÁLIDOS
-console.log("\n TESTES ANIMAIS INVÁLIDOS ---");
-try {
-    abrigo.validarAnimais(['Rex', 'Toto']); // Animal inexistente
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-//  Teste do validarAnimais() - CASO INVÁLIDO (duplicado)
-console.log("\n TESTES ANIMAIS DUPLICADO ---");
-try {
-    abrigo.validarAnimais(['Rex', 'Rex']); // Duplicado
-} catch (e) {
-    console.log('Erro capturado:', e.message);
-}
-
-//  Teste combinado (animais e brinquedos)
-console.log("\n Teste combinado (animais e brinquedos)");
-try {
-    abrigo.validarAnimais(['Mimi', 'Fofo']);
-    abrigo.validarBrinquedos(['BOLA', 'LASER']);
-    console.log(' Todos os dados são válidos!');
-} catch (e) {
-    console.log(' Erro:', e.message);
-}
 ````
 
 ```
- TESTES VÁLIDOS ---
+EXEMPLO 1 ---
 
- VALIDANDO BRINQUEDOS: [BOLA, RATO]
- Verificando: BOLA
-   "BOLA" - OK
- Verificando: RATO
-   "RATO" - OK
- VALIDAÇÃO BRINQUEDOS: Todos os 2 brinquedos são válidos
+ VERIFICANDO ORDEM DE BRINQUEDOS:
+   Pessoa tem: [RATO, BOLA, LASER, CAIXA]
+   Animal precisa: [RATO, BOLA, LASER]
 
- VALIDANDO BRINQUEDOS: [LASER, CAIXA, NOVELO]
- Verificando: LASER
-   "LASER" - OK
- Verificando: CAIXA
-   "CAIXA" - OK
- Verificando: NOVELO
-   "NOVELO" - OK
- VALIDAÇÃO BRINQUEDOS: Todos os 3 brinquedos são válidos
+  Procurando "RATO" (1/3)
+ Buscando a partir da posição 0
+ Posição 0: "RATO"
+ENCONTRADO na posição 0! Próxima busca a partir da posição 1
 
- TESTES INVÁLIDOS ------
+  Procurando "BOLA" (2/3)
+ Buscando a partir da posição 1
+ Posição 1: "BOLA"
+ENCONTRADO na posição 1! Próxima busca a partir da posição 2
 
- VALIDANDO BRINQUEDOS: [BOLA, CARRO]
- Verificando: BOLA
-   "BOLA" - OK
- Verificando: CARRO
-   ERRO: Brinquedo "CARRO" não é válido
-   Brinquedos válidos: [RATO, BOLA, LASER, CAIXA, NOVELO, SKATE]
-Erro capturado: Brinquedo inválido
+  Procurando "LASER" (3/3)
+ Buscando a partir da posição 2
+ Posição 2: "LASER"
+ENCONTRADO na posição 2! Próxima busca a partir da posição 3
+ORDEM CORRETA: Todos os brinquedos foram encontrados na sequência adequada
+Resultado: true
 
- TESTES DUPLICADO ------
+ EXEMPLO 2 -------
 
- VALIDANDO BRINQUEDOS: [BOLA, BOLA]
- Verificando: BOLA
-   "BOLA" - OK
- Verificando: BOLA
-  ERRO: Brinquedo "BOLA" está duplicado
-Erro capturado: Brinquedo duplicado não é permitido
+ VERIFICANDO ORDEM DE BRINQUEDOS:
+   Pessoa tem: [BOLA, RATO, LASER]
+   Animal precisa: [RATO, BOLA, LASER]
 
---- TESTES ANIMAIS VÁLIDOS --------
+  Procurando "RATO" (1/3)
+ Buscando a partir da posição 0
+ Posição 0: "BOLA"
+ Posição 1: "RATO"
+ENCONTRADO na posição 1! Próxima busca a partir da posição 2
 
- VALIDANDO ANIMAIS: [Rex, Mimi]
- Verificando: Rex
-   "Rex" (cão) - Brinquedos: [RATO, BOLA]
- Verificando: Mimi
-   "Mimi" (gato) - Brinquedos: [BOLA, LASER]
- VALIDAÇÃO ANIMAIS: Todos os 2 animais são válidos
+  Procurando "BOLA" (2/3)
+ Buscando a partir da posição 2
+ Posição 2: "LASER"
+NÃO ENCONTRADO: "BOLA" não foi encontrado na ordem correta
+ORDEM INCORRETA: Falha ao encontrar "BOLA"
+Resultado: false
 
- VALIDANDO ANIMAIS: [Fofo, Bola, Bebe]
- Verificando: Fofo
-   "Fofo" (gato) - Brinquedos: [BOLA, RATO, LASER]
- Verificando: Bola
-   "Bola" (cão) - Brinquedos: [CAIXA, NOVELO]
- Verificando: Bebe
-   "Bebe" (cão) - Brinquedos: [LASER, RATO, BOLA]
- VALIDAÇÃO ANIMAIS: Todos os 3 animais são válidos
-
- TESTES ANIMAIS INVÁLIDOS ---
-
- VALIDANDO ANIMAIS: [Rex, Toto]
- Verificando: Rex
-   "Rex" (cão) - Brinquedos: [RATO, BOLA]
- Verificando: Toto
- ERRO: Animal "Toto" não existe na base de dados
-  Animais disponíveis: [Rex, Mimi, Fofo, Zero, Bola, Bebe, Loco]
-Erro capturado: Animal inválido
-
- TESTES ANIMAIS DUPLICADO ---
-
- VALIDANDO ANIMAIS: [Rex, Rex]
- Verificando: Rex
-   "Rex" (cão) - Brinquedos: [RATO, BOLA]
- Verificando: Rex
-  ERRO: Animal "Rex" está duplicado
-Erro capturado: Animal inválido
-
- Teste combinado (animais e brinquedos)
-
- VALIDANDO ANIMAIS: [Mimi, Fofo]
- Verificando: Mimi
-   "Mimi" (gato) - Brinquedos: [BOLA, LASER]
- Verificando: Fofo
-   "Fofo" (gato) - Brinquedos: [BOLA, RATO, LASER]
- VALIDAÇÃO ANIMAIS: Todos os 2 animais são válidos
-
- VALIDANDO BRINQUEDOS: [BOLA, LASER]
- Verificando: BOLA
-   "BOLA" - OK
- Verificando: LASER
-   "LASER" - OK
- VALIDAÇÃO BRINQUEDOS: Todos os 2 brinquedos são válidos
- Todos os dados são válidos!
 
 ```
 
