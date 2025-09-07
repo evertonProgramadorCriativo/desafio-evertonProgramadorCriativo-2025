@@ -6,9 +6,7 @@
 
 #### O projeto é uma simulação de um sistema de gerenciamento de animais em um abrigo, com foco nos brinquedos favoritos de cada animal.
 
-
-
-
+![Everton-> Todos os testes passaram](https://i.ibb.co/SXfhcWkB/Screenshot-36.png)
 
 
 ````bash
@@ -57,8 +55,8 @@ const abrigo = new AbrigoAnimais();
         }
     }
 }
-
 ````
+````bash
 // Caso básico com adoções normais
 const resultado1 = abrigo.processarAdocoes(
     ['RATO', 'BOLA', 'LASER'],  // Pessoa 1
@@ -112,7 +110,8 @@ const resultado6 = abrigo.processarAdocoes(
 console.log("Resultado final:", resultado6);
 
 
-```
+````
+````bash
 
 // teste Normal
 
@@ -150,7 +149,8 @@ const resultado4 = abrigo.encontraPessoas(
 );
 console.log("Resultado:", resultado4);
 
-```
+````
+
 
 Estrutura do Código
 --------------------

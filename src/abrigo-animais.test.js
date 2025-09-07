@@ -11,53 +11,53 @@ describe('Abrigo de Animais', () => {
   test('Deve encontrar pessoa para um animal', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'RATO,BOLA', 'RATO,NOVELO', 'Rex,Fofo');
-      expect(resultado.lista[0]).toBe('Fofo - abrigo');
-      expect(resultado.lista[1]).toBe('Rex - pessoa 1');
-      expect(resultado.lista.length).toBe(2);
-      expect(resultado.erro).toBeFalsy();
+    expect(resultado.lista[0]).toBe('Fofo - abrigo');
+    expect(resultado.lista[1]).toBe('Rex - pessoa 1');
+    expect(resultado.lista.length).toBe(2);
+    expect(resultado.erro).toBeFalsy();
   });
 
   test('Deve encontrar pessoa para um animal intercalando brinquedos', () => {
     const resultado = new AbrigoAnimais().encontraPessoas('BOLA,LASER',
       'BOLA,NOVELO,RATO,LASER', 'Mimi,Fofo,Rex,Bola');
 
-      expect(resultado.lista[0]).toBe('Bola - abrigo');
-      expect(resultado.lista[1]).toBe('Fofo - pessoa 2');
-      expect(resultado.lista[2]).toBe('Mimi - abrigo');
-      expect(resultado.lista[3]).toBe('Rex - abrigo');
-      expect(resultado.lista.length).toBe(4);
-      expect(resultado.erro).toBeFalsy();
+    expect(resultado.lista[0]).toBe('Bola - abrigo');
+    expect(resultado.lista[1]).toBe('Fofo - pessoa 2');
+    expect(resultado.lista[2]).toBe('Mimi - abrigo');
+    expect(resultado.lista[3]).toBe('Rex - abrigo');
+    expect(resultado.lista.length).toBe(4);
+    expect(resultado.erro).toBeFalsy();
   });
-   // Teste principais
+  // Teste principais
   test('Deve encontrar pessoa para um animal', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'RATO,BOLA', 'RATO,NOVELO', 'Rex,Fofo');
-      expect(resultado.lista[0]).toBe('Fofo - abrigo');
-      expect(resultado.lista[1]).toBe('Rex - pessoa 1');
-      expect(resultado.lista.length).toBe(2);
-      expect(resultado.erro).toBeFalsy();
+    expect(resultado.lista[0]).toBe('Fofo - abrigo');
+    expect(resultado.lista[1]).toBe('Rex - pessoa 1');
+    expect(resultado.lista.length).toBe(2);
+    expect(resultado.erro).toBeFalsy();
   });
-  
+
   test('Deve encontrar pessoa para um animal intercalando brinquedos', () => {
     const resultado = new AbrigoAnimais().encontraPessoas('BOLA,LASER',
       'BOLA,NOVELO,RATO,LASER', 'Mimi,Fofo,Rex,Bola');
 
-      expect(resultado.lista[0]).toBe('Bola - abrigo');
-      expect(resultado.lista[1]).toBe('Fofo - pessoa 2');
-      expect(resultado.lista[2]).toBe('Mimi - abrigo');
-      expect(resultado.lista[3]).toBe('Rex - abrigo');
-      expect(resultado.lista.length).toBe(4);
-      expect(resultado.erro).toBeFalsy();
+    expect(resultado.lista[0]).toBe('Bola - abrigo');
+    expect(resultado.lista[1]).toBe('Fofo - pessoa 2');
+    expect(resultado.lista[2]).toBe('Mimi - abrigo');
+    expect(resultado.lista[3]).toBe('Rex - abrigo');
+    expect(resultado.lista.length).toBe(4);
+    expect(resultado.erro).toBeFalsy();
   });
 
-   // Regra  Ordem dos brinquedos
+  // Regra  Ordem dos brinquedos
   test('Deve respeitar ordem dos brinquedos', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'BOLA,RATO', 'RATO,BOLA', 'Rex');
     expect(resultado.lista[0]).toBe('Rex - pessoa 2');
   });
 
-    // Regra : Intercalar brinquedos
+  // Regra : Intercalar brinquedos
   test('Deve permitir intercalar brinquedos', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'LASER,SKATE,RATO,BOLA', 'NOVELO', 'Bebe');
@@ -70,11 +70,11 @@ describe('Abrigo de Animais', () => {
     expect(resultado.lista[0]).toBe('Rex - abrigo');
   });
 
-    // Regra : Máximo 3 animais por pessoa
+  // Regra : Máximo 3 animais por pessoa
   test('Pessoa não pode levar mais de 3 animais', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'RATO,BOLA,LASER,CAIXA,NOVELO,SKATE', 'NOVELO', 'Rex,Mimi,Bebe,Bola');
-    
+
     const pessoa1Adocoes = resultado.lista.filter(item => item.includes('pessoa 1'));
     expect(pessoa1Adocoes.length).toBeLessThanOrEqual(3);
   });
@@ -90,13 +90,40 @@ describe('Abrigo de Animais', () => {
     expect(resultado.lista[0]).toBe('Loco - pessoa 2');
   });
 
-    // Regra : Gatos não dividem brinquedos
+  // Regra : Gatos não dividem brinquedos
   test('Gatos não dividem brinquedos', () => {
     const resultado = new AbrigoAnimais().encontraPessoas(
       'BOLA,LASER', 'BOLA,RATO,LASER', 'Mimi,Fofo');
-    
+
     // Se ambos são gatos e compartilham brinquedos (BOLA, LASER), vão para o abrigo
     expect(resultado.lista).toContain("Fofo - pessoa 2", "Mimi - abrigo");
-   
+
   })
+  // Testes de casos edge
+  test('Animal sem pessoa compatível vai para abrigo', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'LASER', 'NOVELO', 'Rex');
+    expect(resultado.lista[0]).toBe('Rex - abrigo');
+  });
+
+  test('Resultado deve estar ordenado alfabeticamente', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA,LASER,CAIXA,NOVELO,SKATE', 'NOVELO', 'Zero,Rex,Mimi');
+
+    const nomes = resultado.lista.map(item => item.split(' - ')[0]);
+    const nomesOrdenados = [...nomes].sort();
+    expect(nomes).toEqual(nomesOrdenados);
+  });
+
+  test('Teste complexo com múltiplas regras', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA,LASER,SKATE', 'CAIXA,NOVELO,BOLA,LASER', 'Rex,Mimi,Fofo,Bola,Loco');
+
+    expect(resultado.lista.length).toBe(5);
+    expect(resultado.erro).toBeFalsy();
+
+    // Verificar que está ordenado
+    const nomes = resultado.lista.map(item => item.split(' - ')[0]);
+    expect(nomes).toEqual(['Bola', 'Fofo', 'Loco', 'Mimi', 'Rex']);
+  });
 });
